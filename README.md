@@ -6,7 +6,7 @@
 
 Prometheus exporter for PostgreSQL server metrics.
 
-Tested PostgreSQL versions: `9.1`, `9.2`, `9.3`, `9.4`, `9.5`, `9.6`, `10`, `11`, `12`.
+Tested PostgreSQL versions: `9.4`, `9.5`, `9.6`, `10`, `11`, `12`.
 
 ## Building and running
 
