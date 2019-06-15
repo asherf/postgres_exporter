@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/kisielk/errcheck/internal/errcheck"
-	"github.com/kisielk/gotool"
 )
 
 const (
@@ -133,6 +132,7 @@ func parseFlags(checker *errcheck.Checker, args []string) ([]string, int) {
 	flags.BoolVar(&checker.Blank, "blank", false, "if true, check for errors assigned to blank identifier")
 	flags.BoolVar(&checker.Asserts, "asserts", false, "if true, check for ignored type assertion results")
 	flags.BoolVar(&checker.WithoutTests, "ignoretests", false, "if true, checking of _test.go files is disabled")
+	flags.BoolVar(&checker.WithoutGeneratedCode, "ignoregenerated", false, "if true, checking of files with generated code is disabled")
 	flags.BoolVar(&checker.Verbose, "verbose", false, "produce more verbose logging")
 
 	flags.BoolVar(&abspath, "abspath", false, "print absolute paths to files")
@@ -140,9 +140,7 @@ func parseFlags(checker *errcheck.Checker, args []string) ([]string, int) {
 	tags := tagsFlag{}
 	flags.Var(&tags, "tags", "space-separated list of build tags to include")
 	ignorePkg := flags.String("ignorepkg", "", "comma-separated list of package paths to ignore")
-	ignore := ignoreFlag(map[string]*regexp.Regexp{
-		"fmt": dotStar,
-	})
+	ignore := ignoreFlag(map[string]*regexp.Regexp{})
 	flags.Var(ignore, "ignore", "[deprecated] comma-separated list of pairs of the form pkg:regex\n"+
 		"            the regex is used to ignore names within pkg.")
 
@@ -184,8 +182,11 @@ func parseFlags(checker *errcheck.Checker, args []string) ([]string, int) {
 	}
 	checker.Ignore = ignore
 
-	// ImportPaths normalizes paths and expands '...'
-	return gotool.ImportPaths(flags.Args()), exitCodeOk
+	paths := flags.Args()
+	if len(paths) == 0 {
+		paths = []string{"."}
+	}
+	return paths, exitCodeOk
 }
 
 func main() {

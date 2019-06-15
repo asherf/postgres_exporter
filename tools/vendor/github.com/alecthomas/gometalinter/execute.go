@@ -147,7 +147,7 @@ func executeLinter(id int, state *linterState, args []string) error {
 	dbg("executing %s", strings.Join(args, " "))
 	buf := bytes.NewBuffer(nil)
 	command := args[0]
-	cmd := exec.Command(command, args[1:]...) // nolint: gas
+	cmd := exec.Command(command, args[1:]...) // nolint: gosec
 	cmd.Stdout = buf
 	cmd.Stderr = buf
 	err := cmd.Start()
@@ -155,15 +155,14 @@ func executeLinter(id int, state *linterState, args []string) error {
 		return fmt.Errorf("failed to execute linter %s: %s", command, err)
 	}
 
-	done := make(chan bool)
+	done := make(chan error)
 	go func() {
-		err = cmd.Wait()
-		done <- true
+		done <- cmd.Wait()
 	}()
 
 	// Wait for process to complete or deadline to expire.
 	select {
-	case <-done:
+	case err = <-done:
 
 	case <-state.deadline:
 		err = fmt.Errorf("deadline exceeded by linter %s (try increasing --deadline)",

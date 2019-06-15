@@ -27,6 +27,12 @@ $ goveralls -repotoken your_repos_coveralls_token
 You can set the environment variable `$COVERALLS_TOKEN` to your token so you do
 not have to specify it at each invocation.
 
+
+You can also run this reporter for multiple passes with the flag `-parallel` or
+by setting the environment variable `COVERALLS_PARALLEL=true` (see [coveralls
+docs](https://docs.coveralls.io/parallel-build-webhook) for more details.
+
+
 # Continuous Integration
 
 There is no need to run `go test` separately, as `goveralls` runs the entire
@@ -137,7 +143,7 @@ test:
 
 For more information, See https://coveralls.zendesk.com/hc/en-us/articles/201342809-Go
 
-## Sempahore
+## Semaphore
 
 Store your Coveralls API token in `Environment Variables`:
 
@@ -145,7 +151,7 @@ Store your Coveralls API token in `Environment Variables`:
 COVERALLS_TOKEN=your_token_goes_here
 ```
 
-More instructions on how to do this can be found in the [Semahore documentation](https://semaphoreci.com/docs/exporting-environment-variables.html).
+More instructions on how to do this can be found in the [Semaphore documentation](https://semaphoreci.com/docs/exporting-environment-variables.html).
 
 Replace the `go test` line in your `Commands` with these lines:
 
@@ -161,6 +167,14 @@ You can use the `-v` flag to see verbose output from the test suite:
 
 ```
 $ goveralls -v -service semaphore
+```
+
+## Coveralls Enterprise
+
+If you are using Coveralls Enterprise and have a self-signed certificate, you need to skip certificate verification:
+
+```shell
+$ goveralls -insecure
 ```
 
 # Authors

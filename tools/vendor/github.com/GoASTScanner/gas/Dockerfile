@@ -1,23 +1,14 @@
-# Docker version must be 17.05 or higher to allow multistage build
-# See build and run instructions in README.md
+ARG GO_VERSION=1.12
+FROM golang:${GO_VERSION}-alpine AS builder
+RUN apk add --update --no-cache ca-certificates make git curl
+RUN mkdir -p /build
+WORKDIR /build
+COPY . /build/
+RUN go mod download
+RUN make build-linux
 
-# Builds Gas for utilization
-FROM golang:1.8.1-alpine as builder
-ENV workspace /go/src/github.com/GoASTScanner/gas
-ENV GOPATH /go
-COPY . $workspace
-WORKDIR $workspace
-
-RUN go vet $(go list ./... | grep -v /vendor/)
-RUN CGO_ENABLED=0 go build -o gas .
-
-########################################################
-
-# Runs Gas on all Go files in the current directory when 
-# 'docker run' command in README is given
-FROM alpine:3.6
-
-COPY --from=builder /go/src/github.com/GoASTScanner/gas/gas /
-
-# Mounted directory should be placed into the workdir
-CMD /gas $(find . -path ./vendor -prune -o -type f -name "*.go")
+FROM golang:${GO_VERSION}-alpine 
+RUN apk add --update --no-cache ca-certificates git 
+ENV GO111MODULE on
+COPY --from=builder /build/gosec /bin/gosec
+ENTRYPOINT ["/bin/gosec"]

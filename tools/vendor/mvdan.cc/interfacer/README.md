@@ -3,10 +3,19 @@
 [![GoDoc](https://godoc.org/mvdan.cc/interfacer?status.svg)](https://godoc.org/mvdan.cc/interfacer)
 [![Build Status](https://travis-ci.org/mvdan/interfacer.svg?branch=master)](https://travis-ci.org/mvdan/interfacer)
 
+**Deprecated**: A tool that suggests interfaces is prone to bad suggestions, so
+its usefulness in real code is limited. This tool will remain available as a
+proof of concept, and for others to examine and learn from.
+
 A linter that suggests interface types. In other words, it warns about
 the usage of types that are more specific than necessary.
 
 	go get -u mvdan.cc/interfacer
+
+Note that this linter's suggestions tend to be subjective, as interfaces
+are not always the better option. You should select the proposed changes
+that make sense in your codebase, instead of following all of them
+blindly.
 
 ### Usage
 

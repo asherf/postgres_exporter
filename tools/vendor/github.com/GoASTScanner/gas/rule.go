@@ -10,23 +10,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package gas
+package gosec
 
 import (
 	"go/ast"
 	"reflect"
 )
 
-// The Rule interface used by all rules supported by GAS.
+// The Rule interface used by all rules supported by gosec.
 type Rule interface {
+	ID() string
 	Match(ast.Node, *Context) (*Issue, error)
 }
 
 // RuleBuilder is used to register a rule definition with the analyzer
-type RuleBuilder func(c Config) (Rule, []ast.Node)
+type RuleBuilder func(id string, c Config) (Rule, []ast.Node)
 
 // A RuleSet maps lists of rules to the type of AST node they should be run on.
-// The anaylzer will only invoke rules contained in the list associated with the
+// The analyzer will only invoke rules contained in the list associated with the
 // type of AST node it is currently visiting.
 type RuleSet map[reflect.Type][]Rule
 

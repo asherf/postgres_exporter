@@ -1,9 +1,21 @@
 # Go Meta Linter
-[![Build Status](https://travis-ci.org/alecthomas/gometalinter.png)](https://travis-ci.org/alecthomas/gometalinter) [![Gitter chat](https://badges.gitter.im/alecthomas.png)](https://gitter.im/alecthomas/Lobby)
+
+----
+
+gometalinter is **DEPRECATED** and the project will be archived on 2019-04-07. See [#590](https://github.com/alecthomas/gometalinter/issues/590) for discussion.
+
+Switch to [golangci-lint](https://github.com/golangci/golangci-lint).
+
+----
+
+
+[![Build Status](https://travis-ci.org/alecthomas/gometalinter.svg)](https://travis-ci.org/alecthomas/gometalinter) [![Gitter chat](https://badges.gitter.im/alecthomas.svg)](https://gitter.im/alecthomas/Lobby)
 
 <!-- MarkdownTOC -->
 
 - [Installing](#installing)
+    - [Binary Releases](#binary-releases)
+    - [Homebrew](#homebrew)
 - [Editor integration](#editor-integration)
 - [Supported linters](#supported-linters)
 - [Configuration file](#configuration-file)
@@ -17,6 +29,7 @@
   - [What's the best way to use `gometalinter` in CI?](#whats-the-best-way-to-use-gometalinter-in-ci)
   - [How do I make `gometalinter` work with Go 1.5 vendoring?](#how-do-i-make-gometalinter-work-with-go-15-vendoring)
   - [Why does `gometalinter --install` install a fork of gocyclo?](#why-does-gometalinter---install-install-a-fork-of-gocyclo)
+  - [Many unexpected errors are being reported](#many-unexpected-errors-are-being-reported)
   - [Gometalinter is not working](#gometalinter-is-not-working)
     - [1. Update to the latest build of gometalinter and all linters](#1-update-to-the-latest-build-of-gometalinter-and-all-linters)
     - [2. Analyse the debug output](#2-analyse-the-debug-output)
@@ -44,13 +57,20 @@ It is intended for use with editor/IDE integration.
 
 ## Installing
 
-There are two options for installing gometalinter.
+### Binary Releases
 
-1. Install a stable version, eg. `go get -u gopkg.in/alecthomas/gometalinter.v2`.
-   I will generally only tag a new stable version when it has passed the Travis
-  regression tests. The downside is that the binary will be called `gometalinter.v2`.
-2. Install from HEAD with: `go get -u github.com/alecthomas/gometalinter`.
-   This has the downside that changes to gometalinter may break.
+To install the latest stable release:
+
+    curl -L https://git.io/vp6lP | sh
+
+Alternatively you can install a specific version from the [releases](https://github.com/alecthomas/gometalinter/releases) list.
+
+### Homebrew
+
+```sh
+brew tap alecthomas/homebrew-tap
+brew install gometalinter
+```
 
 ## Editor integration
 
@@ -58,6 +78,7 @@ There are two options for installing gometalinter.
 - [Atom go-plus package](https://atom.io/packages/go-plus).
 - [Emacs Flycheck checker](https://github.com/favadi/flycheck-gometalinter).
 - [Go for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=lukehoban.Go).
+- [GoLand File Watcher](https://blog.jetbrains.com/go/2017/10/18/gogland-eap-16-file-watcher-tons-of-new-inspections-smarter-navigate-to-test-and-more/).
 - Vim/Neovim
     - [Neomake](https://github.com/neomake/neomake).
     - [Syntastic](https://github.com/scrooloose/syntastic/wiki/Go:---gometalinter) `let g:syntastic_go_checkers = ['gometalinter']`.
@@ -77,13 +98,13 @@ There are two options for installing gometalinter.
 - [structcheck](https://github.com/opennota/check) - Find unused struct fields.
 - [maligned](https://github.com/mdempsky/maligned) -  Detect structs that would take less memory if their fields were sorted.
 - [errcheck](https://github.com/kisielk/errcheck) - Check that error return values are used.
-- [megacheck](https://github.com/dominikh/go-tools/tree/master/cmd/megacheck) - Run staticcheck, gosimple and unused, sharing work.
+- [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck) - Statically detect bugs, both obvious and subtle ones.
 - [dupl](https://github.com/mibk/dupl) - Reports potentially duplicated code.
-- [ineffassign](https://github.com/gordonklaus/ineffassign/blob/master/list) - Detect when assignments to *existing* variables are not used.
+- [ineffassign](https://github.com/gordonklaus/ineffassign) - Detect when assignments to *existing* variables are not used.
 - [interfacer](https://github.com/mvdan/interfacer) - Suggest narrower interfaces that can be used.
 - [unconvert](https://github.com/mdempsky/unconvert) - Detect redundant type conversions.
 - [goconst](https://github.com/jgautheron/goconst) - Finds repeated strings that could be replaced by a constant.
-- [gas](https://github.com/GoASTScanner/gas) - Inspects source code for security problems by scanning the Go AST.
+- [gosec](https://github.com/securego/gosec) - Inspects source code for security problems by scanning the Go AST.
 
 Disabled by default (enable with `--enable=<linter>`):
 
@@ -91,14 +112,13 @@ Disabled by default (enable with `--enable=<linter>`):
 - [test](http://golang.org/pkg/testing/) - Show location of test failures from the stdlib testing module.
 - [gofmt -s](https://golang.org/cmd/gofmt/) - Checks if the code is properly formatted and could not be further simplified.
 - [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports) - Checks missing or unreferenced package imports.
-- [gosimple](https://github.com/dominikh/go-tools/tree/master/cmd/gosimple) - Report simplifications in code.
+- [gochecknoinits](https://4d63.com/gochecknoinits) - Report init functions, to reduce side effects in code.
+- [gochecknoglobals](https://4d63.com/gochecknoglobals) - Report global vars, to reduce side effects in code.
 - [lll](https://github.com/walle/lll) - Report long lines (see `--line-length=N`).
 - [misspell](https://github.com/client9/misspell) - Finds commonly misspelled English words.
 - [nakedret](https://github.com/alexkohler/nakedret) - Finds naked returns.
 - [unparam](https://github.com/mvdan/unparam) - Find unused function parameters.
-- [unused](https://github.com/dominikh/go-tools/tree/master/cmd/unused) - Find unused variables.
 - [safesql](https://github.com/stripe/safesql) - Finds potential SQL injection vulnerabilities.
-- [staticcheck](https://github.com/dominikh/go-tools/tree/master/cmd/staticcheck) - Statically detect bugs, both obvious and subtle ones.
 
 Additional linters can be added through the command line with `--linter=NAME:COMMAND:PATTERN` (see [below](#details)).
 
@@ -221,35 +241,6 @@ message for a file, that file is parsed for directives.
 
 Install gometalinter (see above).
 
-Install all known linters:
-
-```
-$ gometalinter --install
-Installing:
-  structcheck
-  maligned
-  nakedret
-  deadcode
-  gocyclo
-  ineffassign
-  dupl
-  golint
-  gotype
-  goimports
-  errcheck
-  varcheck
-  interfacer
-  goconst
-  gosimple
-  staticcheck
-  unparam
-  unused
-  misspell
-  lll
-  gas
-  safesql
-```
-
 Run it:
 
 ```
@@ -269,7 +260,6 @@ stutter.go:27:6:warning: error return value not checked (doit()           // tes
 stutter.go:29::error: unreachable code (vet)
 stutter.go:26::error: missing argument for Printf("%d"): format reads arg 1, have only 0 args (vet)
 ```
-
 
 Gometalinter also supports the commonly seen `<path>/...` recursive path
 format. Note that this can be *very* slow, and you may need to increase the linter `--deadline` to allow linters to complete.
@@ -315,6 +305,13 @@ unusably slow when vendoring. The recursive behaviour can be achieved with
 gometalinter by explicitly specifying `<path>/...`. There is a
 [pull request](https://github.com/fzipp/gocyclo/pull/1) open.
 
+### Many unexpected errors are being reported
+
+If you see a whole bunch of errors being reported that you wouldn't expect,
+such as compile errors, this typically means that something is wrong with your
+Go environment. Try `go install` and fix any issues with your go installation,
+then try gometalinter again.
+
 ### Gometalinter is not working
 
 That's more of a statement than a question, but okay.
@@ -324,8 +321,7 @@ are three things to try in that case:
 
 #### 1. Update to the latest build of gometalinter and all linters
 
-    go get -u github.com/alecthomas/gometalinter
-    gometalinter --install
+    curl -L https://git.io/vp6lP | sh
 
 If you're lucky, this will fix the problem.
 

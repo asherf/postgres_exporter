@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package gas
+package gosec
 
 import "go/ast"
 
@@ -56,7 +56,7 @@ func resolveCallExpr(n *ast.CallExpr, c *Context) bool {
 
 // TryResolve will attempt, given a subtree starting at some ATS node, to resolve
 // all values contained within to a known constant. It is used to check for any
-// unkown values in compound expressions.
+// unknown values in compound expressions.
 func TryResolve(n ast.Node, c *Context) bool {
 	switch node := n.(type) {
 	case *ast.BasicLit:
