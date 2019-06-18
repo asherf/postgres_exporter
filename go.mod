@@ -1,4 +1,4 @@
-module github.com/mjl-/postgres_exporter
+module github.com/asherf/postgres_exporter
 
 go 1.12
 
