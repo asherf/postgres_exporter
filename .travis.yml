@@ -15,7 +15,7 @@ script:
 - ./gh-assets-clone.sh
 #- go run mage.go -v all
 - go build
-- go test
+- go test -v -covermode=count -coverprofile=coverage.out
 - "$HOME/gopath/bin/goveralls -coverprofile=cover.out -service=travis-ci"
 - go run mage.go docker
 after_success:
