@@ -5,7 +5,7 @@ language: go
 go:
 - '1.12'
 before_install:
-- curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.17.1
+- curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.17.1
 - golangci-lint --version
 - go get -v github.com/mattn/goveralls
 - sudo wget -O /usr/local/bin/p2 https://github.com/wrouesnel/p2cli/releases/download/r4/p2
