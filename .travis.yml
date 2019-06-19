@@ -19,7 +19,8 @@ script:
 - go build -v
 - mkdir .coverage
 - go test -v -covermode count -coverprofile=.coverage/github.com-wrouesnel-postgres_exporter-cmd-postgres_exporter.out
-- tests/test-smoke postgres_exporter postgres_exporter_integration_test.go
+- go test . -c -tags integration -a -ldflags -extldflags '-static' -o postgres_exporter_integration_test -cover -covermode count
+- tests/test-smoke postgres_exporter postgres_exporter_integration_test_script postgres_exporter_integration_test .coverage/cover.integration.out
 - "$HOME/gopath/bin/goveralls -coverprofile=cover.out -service=travis-ci"
 - docker build --build-arg=binary=postgres_exporter -t postgres_exporter .
 after_success:
