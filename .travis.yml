@@ -15,14 +15,13 @@ before_install:
 - sudo apt-get update && sudo apt-get install postgresql-client-common
 script:
 - ./gh-assets-clone.sh
-#- go run mage.go -v all
-- golangci-lint run
+- golangci-lint run -v
 - go build -v
 - mkdir .coverage
 - go test -v -covermode count -coverprofile=.coverage/github.com-wrouesnel-postgres_exporter-cmd-postgres_exporter.out
 - tests/test-smoke postgres_exporter postgres_exporter_integration_test.go
 - "$HOME/gopath/bin/goveralls -coverprofile=cover.out -service=travis-ci"
-- go run mage.go docker
+- docker build --build-arg=binary=postgres_exporter -t postgres_exporter .
 after_success:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - if [ ! -z "$TRAVIS_TAG" ]; then docker tag wrouesnel/postgres_exporter:latest wrouesnel/postgres_exporter:$TRAVIS_TAG
@@ -51,3 +50,6 @@ deploy:
     tags: true
     branch: master
     repo: wrouesnel/postgres_exporter
+
+
+    

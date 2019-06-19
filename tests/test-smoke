@@ -135,7 +135,7 @@ smoketest_postgres() {
     fi
     trap "docker-compose logs; docker-compose down ; docker-compose rm -v; exit 1" EXIT INT TERM
     local compose_cmd="POSTGRES_PASSWORD=$POSTGRES_PASSWORD docker-compose up -d --force-recreate --build"
-    echo "Compose Cmd: $compose_cmd"
+    echo "asher: Compose Cmd: $compose_cmd"
     eval "$compose_cmd"
     
     master_container=$(docker-compose ps -q pg-master)
@@ -152,14 +152,15 @@ smoketest_postgres() {
         --log.level=debug --web.listen-address=:$exporter_port &
     exporter_pid=$!
     # shellcheck disable=SC2064
+    echo "asher: load logs"
     trap "docker-compose logs; docker-compose down ; docker-compose rm -v ; kill $exporter_pid; exit 1" EXIT INT TERM
     wait_for_exporter
-
+    echo "asher: collect metrics"
     if ! wget -q -O - http://localhost:$exporter_port/metrics 1> "$METRICS_DIR/.metrics.replicated.$version.prom" ; then
         echo "Failed on postgres $version (replicated $DOCKER_IMAGE)" 1>&2
         exit 1
     fi
-
+    echo "asher: all done. KILL STUFF"
     kill $exporter_pid    
     docker-compose down
     docker-compose rm -v
