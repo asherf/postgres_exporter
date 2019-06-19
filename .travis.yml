@@ -17,7 +17,10 @@ script:
 - ./gh-assets-clone.sh
 #- go run mage.go -v all
 - golangci-lint run
-- go test -v -covermode=count -coverprofile=cover.out
+- go build -v
+- go test -v -covermode count -coverprofile=.coverage/github.com-wrouesnel-postgres_exporter-cmd-postgres_exporter.out postgres_exporter
+#- go test -v -covermode=count -coverprofile=cover.out
+- tests/test-smoke postgres_exporter postgres_exporter_integration_test.go
 - "$HOME/gopath/bin/goveralls -coverprofile=cover.out -service=travis-ci"
 - go run mage.go docker
 after_success:
